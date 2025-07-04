@@ -1,32 +1,49 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 
 const Login = () => {
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-  })
+  });
 
-  const handleSubmit = async (e:React.FormEvent) => {
-    e.preventDefault()
-    console.log(formData)
-    // TODO: Add login logic
-    setFormData ({
-      email: "",
-      password: ""
-    })
-  }
-  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data)
+      if (!res.ok) {
+        throw new Error(data?.message);
+      }
+      if (data?.success) {
+        setFormData({
+          email: "",
+          password: "",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="mt-8 md:mt-20">
-      <h1 className="text-center font-semibold text-xl md:text-5xl">Welcome back to Apna Hisab</h1>
+      <h1 className="text-center font-semibold text-xl md:text-5xl">
+        Welcome back to Apna Hisab
+      </h1>
       <div className="form-container mt-8 px-4 border border-zinc-300 m-4 rounded-lg shadow-md shadow-zinc-300 py-8">
-        <h2 className="text-center font-semibold text-lg md:text-4xl">Login to your account</h2>
-        <form 
-          onSubmit={handleSubmit}
-          className="mt-8 mx-auto md:mx-16">
+        <h2 className="text-center font-semibold text-lg md:text-4xl">
+          Login to your account
+        </h2>
+        <form onSubmit={handleSubmit} className="mt-8 mx-auto md:mx-16">
           <div className="mb-5">
             <label
               htmlFor="email"
@@ -41,7 +58,9 @@ const Login = () => {
               className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-blue-500 md:h-18 md:text-2xl md:font-semibold"
               placeholder="name@email.com"
               value={formData.email}
-              onChange={(e)=>setFormData({...formData, email: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
           </div>
@@ -59,7 +78,9 @@ const Login = () => {
               className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-blue-500 md:h-18 md:text-2xl md:font-semibold"
               placeholder="Your password"
               value={formData.password}
-              onChange={(e)=>setFormData({...formData, password: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
             />
           </div>
@@ -71,7 +92,10 @@ const Login = () => {
           </button>
         </form>
         <p className="mt-4 text-center text-sm font-medium text-grey-900 md:text-2xl md:font-semibold md:mb-8">
-          Don't have account?{" "} <Link href="/register" className="text-blue-500 hover:underline">Create New</Link>
+          Don't have account?{" "}
+          <Link href="/register" className="text-blue-500 hover:underline">
+            Create New
+          </Link>
         </p>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { userSchema } from "@/lib/validation/user";
+import { registerValidation } from "@/lib/validation/user";
 import { connectToDatabase } from "@/lib/db/mongodb";
 import User from "@/models/user";
+import { cookies } from "next/headers";
 
 export async function POST(NextRequest: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function POST(NextRequest: NextRequest) {
         message: "All fields are required",
       });
 
-    const user = userSchema.safeParse({ firstName, email, password });
+    const user = registerValidation.safeParse({ firstName, email, password });
 
     if (!user.success)
       return NextResponse.json({
@@ -44,10 +45,22 @@ export async function POST(NextRequest: NextRequest) {
         message: "Internal server error, try again later",
       });
 
-    return NextResponse.json({
-      success: true,
-      message: "User created successfully",
-    });
+    const token = await newUser.generateToken()
+
+    if (!token) return NextResponse.json({ success: false, message: "Internal server error, please try again later"})
+
+    const cookieStore = await cookies()
+
+    cookieStore.set("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/"
+    })
+
+    return NextResponse.json({ success: true, message: "User created successfully" })
+
   } catch (error) {
     return NextResponse.json({
       success: false,

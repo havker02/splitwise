@@ -25,12 +25,14 @@ const Login = () => {
       }
       const data = await res.json();
       console.log(data);
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-      });
+      if (data?.success) {
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
