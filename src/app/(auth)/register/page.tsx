@@ -1,14 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUserAuthStore } from "@/stores/userAuthStore";
 
 const Login = () => {
+  const { login } = useUserAuthStore();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/tracks")
+      login()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +44,9 @@ const Login = () => {
           email: "",
           password: "",
         });
+        router.push("/tracks")
       }
+      localStorage.setItem("token", data?.token);
     } catch (error) {
       console.log(error);
     }

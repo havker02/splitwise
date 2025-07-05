@@ -1,12 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUserAuthStore } from "@/stores/userAuthStore";
 
 const Login = () => {
+  const { login } = useUserAuthStore();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/tracks")
+      login()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +40,9 @@ const Login = () => {
           email: "",
           password: "",
         });
+        router.push("/tracks")
       }
+      localStorage.setItem("token", data?.token);
     } catch (error) {
       console.log(error);
     }
@@ -67,8 +81,7 @@ const Login = () => {
           <div className="mb-5">
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900  focus:outline-blue-500 md:text-2xl md:font-semibold md:mb-4 md:mt-8"
-            >
+              className="block mb-2 text-sm font-medium text-gray-900  focus:outline-blue-500 md:text-2xl md:font-semibold md:mb-4 md:mt-8">
               Your password
             </label>
             <input

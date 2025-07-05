@@ -47,7 +47,7 @@ export async function POST(NextRequest: NextRequest) {
 
     const token = await newUser.generateToken()
 
-    if (!token) return NextResponse.json({ success: false, message: "Internal server error, please try again later"})
+    if (!token) return NextResponse.json({ success: false, message: "Internal server error, please try again later" })
 
     const cookieStore = await cookies()
 
@@ -59,7 +59,7 @@ export async function POST(NextRequest: NextRequest) {
       path: "/"
     })
 
-    return NextResponse.json({ success: true, message: "User created successfully" })
+    return NextResponse.json({ success: true, message: "User created successfully", token: token })
 
   } catch (error) {
     return NextResponse.json({

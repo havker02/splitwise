@@ -56,7 +56,7 @@ export async function POST(NextRequest: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return NextResponse.json({ success: true, message: "Login successfully" });
+    return NextResponse.json({ success: true, message: "Login successfully", token: token });
   } catch (error) {
     console.log(error);
     return NextResponse.json({

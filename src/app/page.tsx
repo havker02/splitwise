@@ -1,8 +1,17 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/tracks")
+    }
+  }, [])
   return (
     <div>
       <div className="my-4 md:mt-16">

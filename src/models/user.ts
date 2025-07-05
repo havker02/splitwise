@@ -70,10 +70,9 @@ userSchema.methods.comparePassword = async function (password:string): Promise<b
 }
 
 userSchema.methods.generateToken = async function (): Promise<string> {
-  return jwt.sign({
+  return await jwt.sign({
     id: this._id,
     email: this.email,
-    roles: this.roles
   }, process.env.JWT_SECRET || "surajit", {
     expiresIn: "1d"
   })
